@@ -308,11 +308,12 @@ const slipData = {
 };
 
 const periodeId = {{ $periode->id }};
+const storeRouteTemplate = "{{ route('periode.slip.store', [$periode, '__KARYAWAN__']) }}";
 
 function openModal(karyawanId, nama, jabatan, nip) {
     document.getElementById('modalNama').textContent = 'Input Gaji — ' + nama;
     document.getElementById('modalInfo').textContent = nip + ' · ' + jabatan;
-    document.getElementById('formGaji').action = `/periode/${periodeId}/slip/input/${karyawanId}`;
+    document.getElementById('formGaji').action = storeRouteTemplate.replace('__KARYAWAN__', karyawanId);
     resetFields();
     showModal();
 }
@@ -320,7 +321,7 @@ function openModal(karyawanId, nama, jabatan, nip) {
 function openModalEdit(karyawanId, nama, jabatan, nip, slipId) {
     document.getElementById('modalNama').textContent = 'Edit Gaji — ' + nama;
     document.getElementById('modalInfo').textContent = nip + ' · ' + jabatan;
-    document.getElementById('formGaji').action = `/periode/${periodeId}/slip/input/${karyawanId}`;
+    document.getElementById('formGaji').action = storeRouteTemplate.replace('__KARYAWAN__', karyawanId);
     const data = slipData[slipId];
     if (data) {
         populateFields(data);
@@ -443,84 +444,6 @@ function resetFields() {
 document.addEventListener('DOMContentLoaded', function() {
     initRupiahInputs();
 });
-</script>
-<script>
-// Data slip yang sudah ada untuk keperluan edit
-const slipData = {
-    @foreach($slips as $slip)
-    {{ $slip->id }}: {
-        gaji_pokok: {{ $slip->gaji_pokok }},
-        tunj_jabatan: {{ $slip->tunj_jabatan }},
-        tunj_masa_kerja: {{ $slip->tunj_masa_kerja }},
-        tunj_komunikasi: {{ $slip->tunj_komunikasi }},
-        tunj_transportasi: {{ $slip->tunj_transportasi }},
-        tunj_performance: {{ $slip->tunj_performance }},
-        tunj_tambahan: {{ $slip->tunj_tambahan }},
-        overtime: {{ $slip->overtime }},
-        pph21: {{ $slip->pph21 }},
-        bpjs_kesehatan: {{ $slip->bpjs_kesehatan }},
-        bpjs_ketenagakerjaan: {{ $slip->bpjs_ketenagakerjaan }},
-        potongan_lain: {{ $slip->potongan_lain }},
-        pinjaman: {{ $slip->pinjaman }},
-    },
-    @endforeach
-};
-
-const periodeId = {{ $periode->id }};
-
-function openModal(karyawanId, nama, jabatan, nip) {
-    document.getElementById('modalNama').textContent = 'Input Gaji — ' + nama;
-    document.getElementById('modalInfo').textContent = nip + ' · ' + jabatan;
-
-    // Set form action
-    document.getElementById('formGaji').action = `/periode/${periodeId}/slip/input/${karyawanId}`;
-
-    // Reset semua field ke 0
-    resetFields();
-
-    showModal();
-}
-
-function openModalEdit(karyawanId, nama, jabatan, nip, slipId) {
-    document.getElementById('modalNama').textContent = 'Edit Gaji — ' + nama;
-    document.getElementById('modalInfo').textContent = nip + ' · ' + jabatan;
-
-    // Set form action
-    document.getElementById('formGaji').action = `/periode/${periodeId}/slip/input/${karyawanId}`;
-
-    // Isi field dengan data existing
-    const data = slipData[slipId];
-    if (data) {
-        populateFields(data);
-    }
-
-    showModal();
-}
-
-function resetFields() {
-    const fields = [
-        'gaji_pokok','tunj_jabatan','tunj_masa_kerja','tunj_komunikasi',
-        'tunj_transportasi','tunj_performance','tunj_tambahan','overtime',
-        'pph21','bpjs_kesehatan','bpjs_ketenagakerjaan','potongan_lain','pinjaman'
-    ];
-    fields.forEach(f => {
-        const el = document.getElementById('field_' + f);
-        if (el) el.value = 0;
-    });
-}
-
-function showModal() {
-    const modal = document.getElementById('modalGaji');
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
-}
-
-function closeModal() {
-    const modal = document.getElementById('modalGaji');
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-}
-
 </script>
 
 @endsection
