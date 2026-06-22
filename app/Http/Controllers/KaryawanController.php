@@ -104,7 +104,7 @@ public function update(Request $request, Karyawan $karyawan)
             . "👤 *Username:* {$k->username}\n"
             . "🔑 *Password:* karyawan123\n\n"
             . "Silakan login di:\n"
-            . config('app.url') . "/portal/login\n\n"
+            . config('app.url') . "\n\n"
             . "⚠️ *Segera ganti password Anda* setelah login pertama melalui menu Profil Saya.\n\n"
             . "Wassalamu'alaikum Wr. Wb.\n"
             . "*HRD PT Walet Abdillah Jabli*";
@@ -134,7 +134,7 @@ public function update(Request $request, Karyawan $karyawan)
             . "👤 *Username:* {$karyawan->username}\n"
             . "🔑 *Password:* karyawan123\n\n"
             . "Silakan login di:\n"
-            . config('app.url') . "/portal/login\n\n"
+            . config('app.url') . "\n\n"
             . "⚠️ *Segera ganti password Anda* setelah login pertama melalui menu Profil Saya.\n\n"
             . "Wassalamu'alaikum Wr. Wb.\n"
             . "*HRD PT Walet Abdillah Jabli*";

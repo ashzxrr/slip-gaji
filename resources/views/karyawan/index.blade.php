@@ -8,7 +8,7 @@
     <form method="POST" action="{{ route('karyawan.kirimKredensial') }}"
           onsubmit="return confirm('Kirim username & password ke semua karyawan via WhatsApp? Pastikan ini hanya dilakukan SEKALI!')">
         @csrf
-        <button data-loading="Mengirim ke semua WA..." class="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-4 py-2 rounded-lg text-sm hover:from-emerald-600 hover:to-emerald-700 flex items-center gap-2 shadow-md transition-all">
+        <button class="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-4 py-2 rounded-lg text-sm hover:from-emerald-600 hover:to-emerald-700 flex items-center gap-2 shadow-md transition-all">
             <i class="fa fa-whatsapp"></i> Kirim Kredensial ke Semua
         </button>
     </form>

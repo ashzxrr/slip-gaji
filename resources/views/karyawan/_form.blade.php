@@ -62,6 +62,7 @@
                 <option value="Operator">
                 <option value="Superintenden">
                 <option value="Ass. Superintenden">
+                <option value="General Affair">
             </datalist>
             @error('jabatan')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
         </div>

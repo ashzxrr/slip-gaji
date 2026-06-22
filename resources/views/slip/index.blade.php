@@ -11,14 +11,14 @@
     <form method="POST" action="{{ route('periode.slip.salin', $periode) }}"
           onsubmit="return confirm('Salin data gaji dari periode sebelumnya? Data yang sudah ada tidak akan tertimpa.')">
         @csrf
-        <button data-loading="Menyalin data..." class="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-5 py-2 rounded-lg text-sm hover:from-emerald-600 hover:to-emerald-700 flex items-center gap-2 shadow-md transition-all">
+        <button class="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-5 py-2 rounded-lg text-sm hover:from-emerald-600 hover:to-emerald-700 flex items-center gap-2 shadow-md transition-all">
             <i class="fa fa-copy"></i> Salin dari Bulan Lalu
         </button>
     </form>
     <form method="POST" action="{{ route('periode.slip.kirimSemua', $periode) }}"
           onsubmit="return confirm('Kirim semua slip ke WhatsApp? Proses ini memakan beberapa menit.')">
         @csrf
-        <button data-loading="Mengirim ke WhatsApp..." class="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-5 py-2 rounded-lg text-sm hover:from-emerald-600 hover:to-emerald-700 flex items-center gap-2 disabled:opacity-50 shadow-md transition-all"
+        <button class="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-5 py-2 rounded-lg text-sm hover:from-emerald-600 hover:to-emerald-700 flex items-center gap-2 disabled:opacity-50 shadow-md transition-all"
                 {{ $slips->isEmpty() ? 'disabled' : '' }}>
             <i class="fa fa-paper-plane"></i> Kirim Semua ke WA
         </button>
