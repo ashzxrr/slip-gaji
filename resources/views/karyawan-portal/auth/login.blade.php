@@ -50,7 +50,7 @@
     <button type="submit"
             class="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-white py-2.5 rounded-lg font-semibold
                    hover:from-amber-600 hover:to-amber-700 transition text-sm shadow-md">
-        Login & Kirim OTP
+        Login
     </button>
 </form>
 

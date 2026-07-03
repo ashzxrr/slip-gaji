@@ -21,8 +21,8 @@ class FlowkirimController extends Controller
             'message' => 'required|string',
         ]);
 
-        $result = $this->flowkirim->sendMessage($data['number'], $data['message']);
+        $ok = $this->flowkirim->sendText($data['number'], $data['message']);
 
-        return response()->json(array_merge(['ok' => $result['ok']], $result['body'] ?? []), $result['status'] ?? 200);
+        return response()->json(['ok' => $ok], $ok ? 200 : 500);
     }
 }

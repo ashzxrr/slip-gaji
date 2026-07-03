@@ -9,6 +9,7 @@ use App\Http\Controllers\{
 
 use App\Http\Controllers\Karyawan\AuthController as PortalAuthController;
 use App\Http\Controllers\Karyawan\DashboardController as PortalDashboardController;
+use App\Http\Controllers\Karyawan\PortalSlipController;
 use App\Http\Controllers\Karyawan\ProfileController as PortalProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -66,13 +67,13 @@ Route::prefix('portal')->name('portal.')->group(function () {
     Route::middleware('guest')->group(function () {
         Route::get('/login', [PortalAuthController::class, 'showLogin'])->name('login');
         Route::post('/login', [PortalAuthController::class, 'login']);
-        Route::get('/otp', [PortalAuthController::class, 'showOtp'])->name('otp.form');
-        Route::post('/otp', [PortalAuthController::class, 'verifyOtp'])->name('otp.verify');
     });
 
     // Auth karyawan
     Route::middleware(['portal.auth', 'must.change.password'])->group(function () {
         Route::get('/dashboard', [PortalDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/slip', [PortalDashboardController::class, 'index'])->name('slip.index');
+        Route::get('/slip/{slip}', [PortalSlipController::class, 'show'])->name('slip.show');
         Route::get('/slip/{slip}/download', [PortalDashboardController::class, 'downloadSlip'])->name('slip.download');
         Route::get('/profile', [PortalProfileController::class, 'edit'])->name('profile');
         Route::put('/profile', [PortalProfileController::class, 'update'])->name('profile.update');

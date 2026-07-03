@@ -31,10 +31,12 @@
                 </td>
                 <td class="px-4 py-3 text-center">
                     <div class="flex justify-center gap-2">
-                        <button onclick='openPreview({{ $slip->id }}, {{ json_encode(["periode_bulan" => $slip->periode->bulan, "periode_tahun" => $slip->periode->tahun, "nama" => $slip->karyawan->nama, "nip" => $slip->karyawan->nip, "jabatan" => $slip->karyawan->jabatan, "departemen" => $slip->karyawan->departemen, "gaji_pokok" => $slip->gaji_pokok, "tunjangan_jabatan" => $slip->tunjangan_jabatan, "tunjangan_masa_kerja" => $slip->tunjangan_masa_kerja, "tunjangan_komunikasi" => $slip->tunjangan_komunikasi, "tunjangan_transportasi" => $slip->tunjangan_transportasi, "tunjangan_performance" => $slip->tunjangan_performance, "tunjangan_tambahan" => $slip->tunjangan_tambahan, "overtime" => $slip->overtime, "total_penghasilan" => $slip->total_penghasilan, "pph_21" => $slip->pph_21, "bpjs_kesehatan" => $slip->bpjs_kesehatan, "bpjs_ketenagakerjaan" => $slip->bpjs_ketenagakerjaan, "potongan_lain" => $slip->potongan_lain, "pinjaman" => $slip->pinjaman, "total_potongan" => $slip->total_potongan, "gaji_diterima" => $slip->gaji_diterima]) }})' class="text-amber-600 text-xs px-3 py-1.5 border border-amber-300 bg-amber-50 hover:bg-amber-100 rounded-lg transition-all inline-flex items-center gap-1">
+                        <button data-slip-id="{{ $slip->id }}" data-slip='{{ json_encode(["periode_bulan" => $slip->periode->bulan, "periode_tahun" => $slip->periode->tahun, "nama" => $slip->karyawan->nama, "nip" => $slip->karyawan->nip, "jabatan" => $slip->karyawan->jabatan, "departemen" => $slip->karyawan->departemen, "gaji_pokok" => $slip->gaji_pokok, "tunjangan_jabatan" => $slip->tunj_jabatan, "tunjangan_masa_kerja" => $slip->tunj_masa_kerja, "tunjangan_komunikasi" => $slip->tunj_komunikasi, "tunjangan_transportasi" => $slip->tunj_transportasi, "tunjangan_performance" => $slip->tunj_performance, "tunjangan_tambahan" => $slip->tunj_tambahan, "overtime" => $slip->overtime, "total_penghasilan" => $slip->total_penghasilan, "pph_21" => $slip->pph21, "bpjs_kesehatan" => $slip->bpjs_kesehatan, "bpjs_ketenagakerjaan" => $slip->bpjs_ketenagakerjaan, "potongan_lain" => $slip->potongan_lain, "pinjaman" => $slip->pinjaman, "total_potongan" => $slip->total_potongan, "gaji_diterima" => $slip->gaji_diterima], JSON_HEX_APOS|JSON_HEX_QUOT) }}' onclick="openPreview(this)" class="text-amber-600 text-xs px-3 py-1.5 border border-amber-300 bg-amber-50 hover:bg-amber-100 rounded-lg transition-all inline-flex items-center gap-1">
                             <i class="fa fa-eye"></i> Lihat
                         </button>
-                        <a href="{{ route('portal.slip.download', $slip) }}" class="bg-gradient-to-r from-amber-500 to-amber-600 text-white text-xs px-3 py-1.5 rounded-lg hover:from-amber-600 hover:to-amber-700 shadow-sm transition-all inline-flex items-center gap-1">
+                        <a href="{{ route('portal.slip.download', $slip) }}"
+                           target="_blank"
+                           class="bg-gradient-to-r from-amber-500 to-amber-600 text-white text-xs px-3 py-1.5 rounded-lg hover:from-amber-600 hover:to-amber-700 shadow-sm transition-all inline-flex items-center gap-1">
                             <i class="fa fa-download"></i> Download
                         </a>
                     </div>
@@ -76,10 +78,13 @@
             </div>
         </div>
         <div class="flex gap-2">
-            <button onclick='openPreview({{ $slip->id }}, {{ json_encode(["periode_bulan" => $slip->periode->bulan, "periode_tahun" => $slip->periode->tahun, "nama" => $slip->karyawan->nama, "nip" => $slip->karyawan->nip, "jabatan" => $slip->karyawan->jabatan, "departemen" => $slip->karyawan->departemen, "gaji_pokok" => $slip->gaji_pokok, "tunjangan_jabatan" => $slip->tunjangan_jabatan, "tunjangan_masa_kerja" => $slip->tunjangan_masa_kerja, "tunjangan_komunikasi" => $slip->tunjangan_komunikasi, "tunjangan_transportasi" => $slip->tunjangan_transportasi, "tunjangan_performance" => $slip->tunjangan_performance, "tunjangan_tambahan" => $slip->tunjangan_tambahan, "overtime" => $slip->overtime, "total_penghasilan" => $slip->total_penghasilan, "pph_21" => $slip->pph_21, "bpjs_kesehatan" => $slip->bpjs_kesehatan, "bpjs_ketenagakerjaan" => $slip->bpjs_ketenagakerjaan, "potongan_lain" => $slip->potongan_lain, "pinjaman" => $slip->pinjaman, "total_potongan" => $slip->total_potongan, "gaji_diterima" => $slip->gaji_diterima]) }})' class="flex-1 text-amber-600 text-xs px-3 py-2 border border-amber-300 bg-amber-50 hover:bg-amber-100 rounded-lg transition-all inline-flex items-center justify-center gap-1">
+            <a href="{{ route('portal.slip.show', $slip) }}"
+               class="flex-1 text-amber-600 text-xs px-3 py-2 border border-amber-300 bg-amber-50 hover:bg-amber-100 rounded-lg transition-all inline-flex items-center justify-center gap-1">
                 <i class="fa fa-eye"></i> Lihat Rincian
-            </button>
-            <a href="{{ route('portal.slip.download', $slip) }}" class="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-xs px-3 py-2 rounded-lg hover:from-amber-600 hover:to-amber-700 shadow-sm transition-all inline-flex items-center justify-center gap-1">
+            </a>
+            <a href="{{ route('portal.slip.download', $slip) }}"
+               target="_blank"
+               class="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-xs px-3 py-2 rounded-lg hover:from-amber-600 hover:to-amber-700 shadow-sm transition-all inline-flex items-center justify-center gap-1">
                 <i class="fa fa-download"></i> Download
             </a>
         </div>
@@ -93,7 +98,7 @@
 </div>
 
 {{-- Preview Modal --}}
-<div id="previewModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 md:p-0 overflow-y-auto">
+<div id="previewModal" class="hidden fixed inset-0 bg-black/50 z-60 flex items-center justify-center p-4 md:p-0 overflow-y-auto">
     <div class="bg-white rounded-2xl shadow-2xl w-full md:max-w-2xl my-8 md:my-0 border border-amber-100">
         {{-- Modal Header --}}
         <div class="bg-gradient-to-r from-amber-600 to-amber-400 text-white p-6 rounded-t-2xl">
@@ -223,7 +228,7 @@
             <button onclick="closePreview()" class="flex-1 md:flex-none px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition font-medium text-sm">
                 <i class="fa fa-times mr-2"></i> Tutup
             </button>
-            <a id="previewDownloadBtn" href="#" class="flex-1 md:flex-none px-6 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-lg hover:from-amber-600 hover:to-amber-700 transition font-medium text-sm text-center">
+            <a id="previewDownloadBtn" href="#" target="_blank" class="flex-1 md:flex-none px-6 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-lg hover:from-amber-600 hover:to-amber-700 transition font-medium text-sm text-center">
                 <i class="fa fa-download mr-2"></i> Download PDF
             </a>
         </div>
@@ -235,17 +240,15 @@ function formatRp(value) {
     return 'Rp ' + new Intl.NumberFormat('id-ID').format(value);
 }
 
-function openPreview(slipId, data) {
-    // Populate header
+function openPreview(button) {
+    const data = JSON.parse(button.dataset.slip);
+    const slipId = button.dataset.slipId;
+
     document.getElementById('previewPeriode').textContent = data.periode_bulan + ' ' + data.periode_tahun;
-    
-    // Populate employee info
     document.getElementById('previewNama').textContent = data.nama;
     document.getElementById('previewNip').textContent = data.nip;
     document.getElementById('previewJabatan').textContent = data.jabatan;
     document.getElementById('previewDepartemen').textContent = data.departemen;
-    
-    // Populate income
     document.getElementById('previewGajiPokok').textContent = formatRp(data.gaji_pokok);
     document.getElementById('previewTunjanganJabatan').textContent = formatRp(data.tunjangan_jabatan);
     document.getElementById('previewTunjanganMasaKerja').textContent = formatRp(data.tunjangan_masa_kerja);
@@ -255,22 +258,14 @@ function openPreview(slipId, data) {
     document.getElementById('previewTunjanganTambahan').textContent = formatRp(data.tunjangan_tambahan);
     document.getElementById('previewOvertime').textContent = formatRp(data.overtime);
     document.getElementById('previewTotalPenghasilan').textContent = formatRp(data.total_penghasilan);
-    
-    // Populate deductions
     document.getElementById('previewPph21').textContent = formatRp(data.pph_21);
     document.getElementById('previewBpjsKesehatan').textContent = formatRp(data.bpjs_kesehatan);
     document.getElementById('previewBpjsKetenagakerjaan').textContent = formatRp(data.bpjs_ketenagakerjaan);
     document.getElementById('previewPotonganLain').textContent = formatRp(data.potongan_lain);
     document.getElementById('previewPinjaman').textContent = formatRp(data.pinjaman);
     document.getElementById('previewTotalPotongan').textContent = formatRp(data.total_potongan);
-    
-    // Populate total salary
     document.getElementById('previewGajiDiterima').textContent = formatRp(data.gaji_diterima);
-    
-    // Set download link
     document.getElementById('previewDownloadBtn').href = '/portal/slip/' + slipId + '/download';
-    
-    // Show modal
     document.getElementById('previewModal').classList.remove('hidden');
 }
 
@@ -278,7 +273,6 @@ function closePreview() {
     document.getElementById('previewModal').classList.add('hidden');
 }
 
-// Close modal when clicking overlay
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('previewModal').addEventListener('click', function(e) {
         if (e.target === this) {
