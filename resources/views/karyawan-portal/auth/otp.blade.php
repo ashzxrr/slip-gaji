@@ -16,7 +16,7 @@
                 </svg>
             </div>
             <h1 class="text-2xl font-bold text-gray-800">Verifikasi OTP</h1>
-            <p class="text-amber-700 text-sm mt-1">Cek WhatsApp & email Anda untuk kode OTP</p>
+            <p class="text-amber-700 text-sm mt-1">Cek email Anda untuk kode OTP</p>
         </div>
 
         <form method="POST" action="{{ route('portal.otp.verify') }}">

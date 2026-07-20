@@ -66,7 +66,9 @@ Route::prefix('portal')->name('portal.')->group(function () {
     // Guest (belum login)
     Route::middleware('guest')->group(function () {
         Route::get('/login', [PortalAuthController::class, 'showLogin'])->name('login');
-        Route::post('/login', [PortalAuthController::class, 'login']);
+        Route::post('/login', [PortalAuthController::class, 'login'])->name('login.post');
+        Route::get('/otp', [PortalAuthController::class, 'showOtpForm'])->name('otp.form');
+        Route::post('/otp', [PortalAuthController::class, 'verifyOtp'])->name('otp.verify');
     });
 
     // Auth karyawan

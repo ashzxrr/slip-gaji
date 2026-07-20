@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Karyawan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 class KaryawanController extends Controller
 {
     public function index(Request $request)
@@ -90,30 +91,21 @@ public function update(Request $request, Karyawan $karyawan)
     public function kirimKredensial()
 {
     $karyawan = Karyawan::where('aktif', true)
-        ->whereNotNull('no_whatsapp')
+        ->whereNotNull('email')
         ->whereNotNull('username')
         ->get();
 
     $berhasil = $gagal = 0;
 
     foreach ($karyawan as $k) {
-        $pesan = "Assalamu'alaikum Wr. Wb.\n\n"
-            . "Yth. *{$k->nama}*\n\n"
-            . "Kami informasikan bahwa akun portal slip gaji Anda di *PT Walet Abdillah Jabli* telah siap. 🎉\n\n"
-            . "Berikut kredensial login Anda:\n"
-            . "👤 *Username:* {$k->username}\n"
-            . "🔑 *Password:* karyawan123\n\n"
-            . "Silakan login di:\n"
-            . config('app.url') . "\n\n"
-            . "⚠️ *Segera ganti password Anda* setelah login pertama melalui menu Profil Saya.\n\n"
-            . "Wassalamu'alaikum Wr. Wb.\n"
-            . "*HRD PT Walet Abdillah Jabli*";
-
-        $ok = app(\App\Services\FlowKirimService::class)
-            ->sendText($k->no_whatsapp, $pesan);
-
-        $ok ? $berhasil++ : $gagal++;
-        sleep(2);
+        try {
+            Mail::to($k->email)->send(new \App\Mail\KredensialMail($k));
+            $berhasil++;
+        } catch (\Exception $e) {
+            \Log::error('Kirim kredensial gagal: ' . $e->getMessage());
+            $gagal++;
+        }
+        sleep(1);
     }
 
     return back()->with('success', 
@@ -123,28 +115,22 @@ public function update(Request $request, Karyawan $karyawan)
 
     public function kirimKredensialKaryawan(Karyawan $karyawan)
     {
-        if (! $karyawan->aktif || ! $karyawan->no_whatsapp || ! $karyawan->username) {
+        if (! $karyawan->aktif || ! $karyawan->email || ! $karyawan->username) {
             return back()->with('error', 'Karyawan tidak memenuhi syarat pengiriman kredensial.');
         }
 
-        $pesan = "Assalamu'alaikum Wr. Wb.\n\n"
-            . "Yth. *{$karyawan->nama}*\n\n"
-            . "Kami informasikan bahwa akun portal slip gaji Anda di *PT Walet Abdillah Jabli* telah siap. 🎉\n\n"
-            . "Berikut kredensial login Anda:\n"
-            . "👤 *Username:* {$karyawan->username}\n"
-            . "🔑 *Password:* karyawan123\n\n"
-            . "Silakan login di:\n"
-            . config('app.url') . "\n\n"
-            . "⚠️ *Segera ganti password Anda* setelah login pertama melalui menu Profil Saya.\n\n"
-            . "Wassalamu'alaikum Wr. Wb.\n"
-            . "*HRD PT Walet Abdillah Jabli*";
+        $ok = false;
+        try {
+            Mail::to($karyawan->email)->send(new \App\Mail\KredensialMail($karyawan));
+            $ok = true;
+        } catch (\Exception $e) {
+            \Log::error('Kirim kredensial gagal: ' . $e->getMessage());
+        }
 
-        $ok = app(\App\Services\FlowKirimService::class)
-            ->sendText($karyawan->no_whatsapp, $pesan);
-
-        return back()->with('success', $ok
-            ? "Kredensial berhasil dikirim ke {$karyawan->nama}."
-            : "Gagal mengirim kredensial ke {$karyawan->nama}."
+        return back()->with(
+            $ok ? 'success' : 'error',
+            $ok ? "Kredensial berhasil dikirim ke email {$karyawan->nama}."
+                : "Gagal mengirim kredensial ke {$karyawan->nama}."
         );
 }
 

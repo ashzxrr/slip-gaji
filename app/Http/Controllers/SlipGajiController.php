@@ -3,16 +3,14 @@ namespace App\Http\Controllers;
 
 use App\Models\{Karyawan, GajiPeriode, SlipGaji};
 use App\Models\Notifikasi;
-use App\Services\FlowKirimService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 
 class SlipGajiController extends Controller
 {
-    public function __construct(protected FlowKirimService $flowkirim) {}
 
     public function index(GajiPeriode $periode)
     {
@@ -81,19 +79,19 @@ class SlipGajiController extends Controller
     {
         $slip->load('karyawan','periode');
 
-        $caption = "Halo *{$slip->karyawan->nama}* 👋\n"
-            . "_{$slip->karyawan->jabatan} | {$slip->karyawan->departemen}_\n\n"
-            . "Slip Gaji periode *{$periode->bulan} {$periode->tahun}* Anda telah tersedia. 🎉\n\n"
-            . "Silakan login ke portal karyawan untuk melihat dan mengunduh slip gaji Anda:\n"
-            . config('app.url') . "\n"
-            . "Login menggunakan:\n"
-            . "👤 *Username:* NIP Anda\n"
-            . "🔑 *Password:* Password yang telah Anda buat\n\n"
-            . "Terima kasih atas dedikasi dan kerja keras Anda. "
-            . "Semoga bermanfaat! 🙏\n\n"
-            . "*PT Walet Abdillah Jabli*";
+        if (!$slip->karyawan->email) {
+            return back()->with('error', 'Karyawan ' . $slip->karyawan->nama . ' belum memiliki email.');
+        }
 
-        $ok = $this->flowkirim->sendText($slip->karyawan->no_whatsapp, $caption);
+        $ok = false;
+        try {
+            Mail::to($slip->karyawan->email)->send(
+                new \App\Mail\SlipGajiNotifMail($slip, $periode)
+            );
+            $ok = true;
+        } catch (\Exception $e) {
+            \Log::error('Kirim email slip gagal: ' . $e->getMessage());
+        }
 
         $slip->update([
             'status_kirim' => $ok ? 'terkirim' : 'gagal',
@@ -104,37 +102,37 @@ class SlipGajiController extends Controller
             Notifikasi::create([
                 'karyawan_id' => $slip->karyawan_id,
                 'judul'       => 'Slip Gaji Tersedia',
-                'pesan'       => 'Slip gaji Anda periode ' . $periode->bulan . ' ' . $periode->tahun . ' telah tersedia. Silakan cek dan download di menu Slip Gaji.',
+                'pesan'       => 'Slip gaji Anda periode ' . $periode->bulan . ' ' . $periode->tahun . ' telah tersedia.',
                 'tipe'        => 'slip',
             ]);
         }
 
         return back()->with(
             $ok ? 'success' : 'error',
-            $ok ? 'Notifikasi berhasil dikirim ke WhatsApp!' : 'Gagal kirim. Cek token & session ID FlowKirim.'
+            $ok ? 'Notifikasi berhasil dikirim ke email!' : 'Gagal kirim email. Cek konfigurasi mail.'
         );
     }
+
     public function kirimSemua(GajiPeriode $periode)
     {
-        $slips = $periode->slipGaji()->with('karyawan','periode')->get();
-        $berhasil = $gagal = 0;
+        $slips   = $periode->slipGaji()->with('karyawan','periode')->get();
+        $berhasil = $gagal = $skip = 0;
 
         foreach ($slips as $slip) {
-            [$pdfUrl, $pdfPath] = $this->generatePublicPdf($slip);
+            if (!$slip->karyawan->email) {
+                $skip++;
+                continue;
+            }
 
-                $caption = "Halo *{$slip->karyawan->nama}* 👋\n"
-                    . "_{$slip->karyawan->jabatan} | {$slip->karyawan->departemen}_\n\n"
-                    . "Slip Gaji periode *{$periode->bulan} {$periode->tahun}* Anda telah tersedia. 🎉\n\n"
-                    . "Silakan login ke portal karyawan untuk melihat dan mengunduh slip gaji Anda:\n"
-                    . config('app.url') . "\n"
-                    . "Login menggunakan:\n"
-                    . "👤 *Username:* NIP Anda\n"
-                    . "🔑 *Password:* Password yang telah Anda buat\n\n"
-                    . "Terima kasih atas dedikasi dan kerja keras Anda. "
-                    . "Semoga bermanfaat! 🙏\n\n"
-                    . "*PT Walet Abdillah Jabli*";
-
-            $ok = $this->flowkirim->sendText($slip->karyawan->no_whatsapp, $caption);
+            $ok = false;
+            try {
+                Mail::to($slip->karyawan->email)->send(
+                    new \App\Mail\SlipGajiNotifMail($slip, $periode)
+                );
+                $ok = true;
+            } catch (\Exception $e) {
+                \Log::error('Kirim email slip gagal: ' . $e->getMessage());
+            }
 
             $slip->update([
                 'status_kirim' => $ok ? 'terkirim' : 'gagal',
@@ -145,16 +143,21 @@ class SlipGajiController extends Controller
                 Notifikasi::create([
                     'karyawan_id' => $slip->karyawan_id,
                     'judul'       => 'Slip Gaji Tersedia',
-                    'pesan'       => 'Slip gaji Anda periode ' . $periode->bulan . ' ' . $periode->tahun . ' telah tersedia. Silakan cek dan download di menu Slip Gaji.',
+                    'pesan'       => 'Slip gaji Anda periode ' . $periode->bulan . ' ' . $periode->tahun . ' telah tersedia.',
                     'tipe'        => 'slip',
                 ]);
             }
 
             $ok ? $berhasil++ : $gagal++;
-            sleep(2);
+            sleep(1);
         }
 
-        return back()->with('success', "Selesai! ✅ Terkirim: {$berhasil} | ❌ Gagal: {$gagal}");
+        $msg = "Selesai! ✅ Terkirim: {$berhasil} | ❌ Gagal: {$gagal}";
+        if ($skip > 0) {
+            $msg .= " | ⏭️ Skip (no email): {$skip}";
+        }
+
+        return back()->with('success', $msg);
     }
 
     /**
