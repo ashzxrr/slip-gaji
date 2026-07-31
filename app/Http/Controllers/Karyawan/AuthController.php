@@ -52,7 +52,12 @@ class AuthController extends Controller
         if (!Session::has('otp_karyawan_id')) {
             return redirect()->route('portal.login');
         }
-        return view('karyawan-portal.auth.otp');
+
+        $karyawan = Karyawan::find(Session::get('otp_karyawan_id'));
+
+        return view('karyawan-portal.auth.otp', [
+            'email' => $karyawan?->email,
+        ]);
     }
 
     public function verifyOtp(Request $request)

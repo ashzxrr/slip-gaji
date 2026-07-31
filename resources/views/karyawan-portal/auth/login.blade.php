@@ -22,7 +22,7 @@
             </div>
         @endif
 
-       <form method="POST" action="{{ route('portal.login') }}">
+       <form method="POST" action="{{ route('portal.login') }}" id="portal-login-form">
     @csrf
     <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
@@ -47,10 +47,17 @@
         @error('password')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
     </div>
 
-    <button type="submit"
+    <button type="submit" id="btn-portal-login"
             class="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-white py-2.5 rounded-lg font-semibold
-                   hover:from-amber-600 hover:to-amber-700 transition text-sm shadow-md">
-        Login
+                   hover:from-amber-600 hover:to-amber-700 transition text-sm shadow-md
+                   disabled:opacity-70 disabled:cursor-not-allowed">
+        <span class="inline-flex items-center justify-center gap-2">
+            <svg id="spinner-portal-login" class="hidden w-4 h-4 animate-spin text-white" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+            <span id="label-portal-login">Login</span>
+        </span>
     </button>
 </form>
 
@@ -71,6 +78,36 @@ function togglePwd(inputId, btn) {
         btn.title = 'Tampilkan password';
     }
 }
+
+// Animasi loading saat submit login
+window.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('portal-login-form');
+    if (!form) return;
+
+    form.addEventListener('submit', function () {
+        // Cegah dobel submit
+        if (this.dataset.submitting === '1') return;
+        this.dataset.submitting = '1';
+
+        const btn     = document.getElementById('btn-portal-login');
+        const spinner = document.getElementById('spinner-portal-login');
+        const label   = document.getElementById('label-portal-login');
+
+        // JANGAN disable input hidden _token (CSRF) & tombol toggle password,
+        // karena input disabled tidak ikut terkirim -> bikin 419.
+        // Input teks pakai readonly supaya tetap ikut terkirim.
+        this.querySelectorAll('input[type="text"], input[type="password"]')
+            .forEach(el => el.readOnly = true);
+
+        if (btn) {
+            btn.disabled = true;
+            btn.classList.add('cursor-wait');
+            btn.classList.remove('hover:from-amber-600', 'hover:to-amber-700');
+        }
+        if (spinner) spinner.classList.remove('hidden');
+        if (label) label.textContent = 'Memproses...';
+    });
+});
 </script>
     </div>
 </body>
