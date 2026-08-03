@@ -16,7 +16,7 @@
         </button>
     </form>
     <form method="POST" action="{{ route('periode.slip.kirimSemua', $periode) }}"
-          onsubmit="return confirm('Kirim semua slip ke WhatsApp? Proses ini memakan beberapa menit.')">
+          onsubmit="return confirm('Kirim semua slip ke Email? Proses ini memakan beberapa menit.')">
         @csrf
         <button class="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-5 py-2 rounded-lg text-sm hover:from-emerald-600 hover:to-emerald-700 flex items-center gap-2 disabled:opacity-50 shadow-md transition-all"
                 {{ $slips->isEmpty() ? 'disabled' : '' }}>

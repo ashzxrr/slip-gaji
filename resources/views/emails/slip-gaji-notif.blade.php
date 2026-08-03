@@ -55,7 +55,7 @@
                 Silakan login ke portal karyawan untuk melihat rincian dan mengunduh slip gaji Anda:
             </p>
 
-            <a href="{{ config('app.url') }}/portal/login" class="btn">
+            <a href="{{ config('app.url') }}" class="btn">
                 Lihat Slip Gaji Saya →
             </a>
 
