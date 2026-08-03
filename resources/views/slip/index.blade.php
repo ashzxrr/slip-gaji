@@ -20,7 +20,7 @@
         @csrf
         <button class="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-5 py-2 rounded-lg text-sm hover:from-emerald-600 hover:to-emerald-700 flex items-center gap-2 disabled:opacity-50 shadow-md transition-all"
                 {{ $slips->isEmpty() ? 'disabled' : '' }}>
-            <i class="fa fa-paper-plane"></i> Kirim Semua ke WA
+            <i class="fa fa-paper-plane"></i> Kirim Semua ke Email
         </button>
     </form>
 </div>
