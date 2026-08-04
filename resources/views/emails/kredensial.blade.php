@@ -42,7 +42,7 @@
                 <p>🔑 <strong>Password:</strong> karyawan123</p>
             </div>
 
-            <a href="{{ config('app.url') }}/portal/login" class="btn">
+            <a href="{{ config('app.url') }}" class="btn">
                 Login ke Portal →
             </a>
 
